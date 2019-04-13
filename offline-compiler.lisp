@@ -6,6 +6,33 @@
             (elt sequence (1- i))))
 sequence)
 
+(defun checkDead (posx posy)
+    (setq *live-people* 0)
+    
+    (dotimes (*relative-x* (+ (* *neighbors-distance* 2) 1))
+        (dotimes (*relative-y*  (+ (* *neighbors-distance* 2) 1))
+            ;(princ (aref *board* (mod (- (+ *relative-x* posx) *neighbors-distance*) *size*) (mod (- (+ *relative-y* posy) *neighbors-distance*) *size*)))
+            (if (equal (aref *board* (mod (- (+ *relative-x* posx) *neighbors-distance*) *size*) (mod (- (+ *relative-y* posy) *neighbors-distance*) *size*)) "A")
+                (setq *live-people* (+ *live-people* 1))
+            )
+        )
+        ;(terpri)
+    )
+    (if (= *live-people* *necro-neighbors*)
+        (setf (aref *new-board* posx posy) "A")
+    )
+)
+
+(defun checkStay (posx posy)
+    (princ (aref *board* posx posy))
+    (princ " (")
+    (princ posx)
+    (princ ",")
+    (princ posy)
+    (princ ")")
+    (terpri)
+)
+
 (princ "Enter the size of the board: ")
 (defvar *size* (read))
 (princ *size*)
@@ -48,6 +75,7 @@ sequence)
 
 (setq *board* (make-array (* *size* *size*)))
 (setq *2dboard* (make-array (list *size* *size*)))
+(setq *new-board* (make-array (list *size* *size*)))
 (dotimes (i (* *size* *size*)) 
     (if (< i *starting-tiles*)
         (setf (aref *board* i) "A")
@@ -60,25 +88,35 @@ sequence)
 (dotimes (i *size*)
     (dotimes (j *size*)
         (setf (aref *2dboard* i j) (aref *board* (+ (* i *size*) j)))
+        (setf (aref *new-board* i j) (aref *board* (+ (* i *size*) j)))
     )
 )
 
 (setq *board* *2dboard*)
 
 (princ *board*)
+
 (terpri)
-(loop
+(dotimes (k 5)
+    (print *new-board*)
     (dotimes (i *size*)
         (dotimes (j *size*)
-            (if (equal (aref *board* i j) "A")
+            (if (equal (aref *board* i j) "d")
                 (progn
-                    (princ "dab")
-                    (terpri)
+                    (checkDead i j)
+                    ;(terpri)
                 )
-                
-                
+                (progn
+                    (checkStay i j)
+                )
             )
         )
     )
-    (return 0)
+    (if (= k 5)
+        (return 0)
+    )
+    (terpri)
+    
 )
+
+
