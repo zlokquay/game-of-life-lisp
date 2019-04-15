@@ -6,6 +6,7 @@
 (defvar *test-case* 0)
 (defvar *new-board* 0)
 (defvar *2dboard* 0)
+(defvar *starting-tiles* 0)
 
 ;Ripped from the big brain boys at stack overflow.
 ;https://stackoverflow.com/questions/49490551/how-to-shuffle-list-in-lisp
@@ -158,7 +159,7 @@ sequence)
     (princ "NEW-BOARD AT STEP ")
     (princ *steps*)
     (princ *new-board*)
-    (if (= k 100)
+    (if (= *steps* 100)
         (return 0)
     )
     (terpri)
